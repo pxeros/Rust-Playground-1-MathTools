@@ -1,3 +1,4 @@
+//mod mystack;
 use std::io::stdin;
 
 pub fn get_input() -> String {

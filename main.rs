@@ -1,3 +1,4 @@
+mod mystack;
 mod functions;
 fn main() {
 	loop {
