@@ -57,27 +57,38 @@ fn get_precedence(op: &str) -> i32 {
 	}
 }
 //This function will be coming soon: It will print the postfix expression into infix
-/*fn rpntoinfix(rpn: Vec<&str>) -> String {
+fn rpntoinfix(mut rpn: Vec<&str>) -> String {
 	let mut alg_stack: Vec<&str> = vec![];
 	let mut alg_string = String::from("");
 	let mut precedence: Vec<i32> = vec![];
+	let mut highest_prec = 0;
 	for i in 0..rpn.len() {
-		let num = rpn.peek().parse::<i32>().unwrap();
-		match num {
-			Ok(num) {alg_stack.push(rpn.pop()); 
-					 continue;
-					}
+		let val = rpn.pop().unwrap();
+		if get_precedence(val) > -1 {
+			let prec = get_precedence(val);
+			let mut num2 = "";
+			let prec2 = precedence.pop().unwrap();
+			let mut num1 = "";
+			let prec1 = precedence.pop().unwrap();
+			if prec2 > -1 && prec2 < prec {
+				num2 = &*["(", alg_stack.pop().unwrap(), ")"].join("");
+			} else {
+				num2 = alg_stack.pop().unwrap();
+			}
+			if prec1 > -1 && prec1 < prec {
+				num1 = &*["(", alg_stack.pop().unwrap(), ")"].join("");
+			} else{
+				num1 = alg_stack.pop().unwrap();
+			}
+			alg_stack.push(&*[num1, val, num2].join(" "));
+			precedence.push(prec);		
+		} else {
+			alg_stack.push(val);
+			precedence.push(get_precedence(val));
 		}
-		precedence.push(get_precedence(rpn.peek()));
-		let val1 = alg_stack.pop();
-		let val2 = alg_stack.pop();
-		let short = String::from("");
-		short.push(String::from(val1.trim()));
-		short.push(String::from(rpn.pop().trim()));
-		short.push(String::from(val2.trim()));
-		alg_stack.push(&short);
 	}
-}*/
+	String::from(alg_stack.pop().unwrap())
+}
 /*fn reverse_stack<'a>(normal: String) -> Vec<&'a str> {
 	let mut norm: Vec<&str> = normal.split(" ").collect();
 	let mut new: Vec<&str> = vec![];
@@ -98,6 +109,7 @@ pub fn reverse_polish_notation(){
 	}
 	//store it
 	let mut normal: Vec<&str> = new;
+	let infix = rpntoinfix(normal.clone());
 	let mut stack: Vec<i32> = vec![];
 	//This was a cool idea I had, I will print the rpn string as infix
 	//let mut norm_string = rpntoinfix(normal);
